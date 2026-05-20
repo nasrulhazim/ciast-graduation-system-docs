@@ -1,6 +1,6 @@
 # 14 — Searchable + paginated students table
 
-> **Commit:** `78a5a7c` — *feat(students): searchable + paginated students table on graduation page*
+> **Commit:** `251fa62` — *feat(students): searchable + paginated students table on graduation page*
 
 ## Why this step?
 
@@ -162,6 +162,7 @@ git commit -m "feat(students): searchable + paginated students table on graduati
 
 ## Common pitfalls
 
+- **Blade still loops `$graduation->students`** — the relationship returns *all* rows, bypassing your search and pagination. The query in the controller runs, but the view never uses its result. Symptom: typing in the search box does nothing, and the table never paginates. Fix: loop `$students` (the paginator), use `$students->total()` for the count, and render `{{ $students->links() }}`.
 - **`like` is case-sensitive on PostgreSQL** but not on SQLite or MySQL. If you migrate to Postgres later, switch to `ilike`.
 - **`->withQueryString()` missing** — pagination links drop the search term. Easy to fix; easy to forget.
 - **`request()->string('search')->trim()`** returns a `Stringable`, but string concat with `'%' . ...` calls `__toString()`. If you see `Object of class Stringable could not be converted to string`, your PHP version is wrong — needs 8.0+.
