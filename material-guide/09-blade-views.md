@@ -21,7 +21,7 @@ Two patterns to internalize from this step:
 - `resources/views/graduations/show.blade.php` — detail + nested student table
 - `resources/views/students/show.blade.php` — detail + verify button
 - `resources/views/students/edit.blade.php` — form with file upload
-- Updated `resources/views/layouts/navigation.blade.php` — adds "Graduations" link in both desktop and mobile menus
+- Updated `resources/views/layouts/app/sidebar.blade.php` — adds "Graduations" link to the Flux sidebar (works for both desktop and the collapsed mobile menu)
 
 ## Prerequisites
 
@@ -31,15 +31,31 @@ Two patterns to internalize from this step:
 
 ### 1. Add the navigation link
 
-Open `resources/views/layouts/navigation.blade.php` and find the desktop navigation block (look for the existing `Dashboard` `x-nav-link`). Add a sibling:
+This project uses the **Livewire starter kit** with **Flux UI**, not Breeze. The nav lives in a single Flux sidebar component that handles both the desktop sidebar and the mobile collapsed menu — no separate desktop/mobile blocks to keep in sync.
+
+Open `resources/views/layouts/app/sidebar.blade.php` and find the existing **Platform** group containing the Dashboard item:
 
 ```blade
-<x-nav-link :href="route('graduations.index')" :active="request()->routeIs('graduations.*')">
-    {{ __('Graduations') }}
-</x-nav-link>
+<flux:sidebar.nav>
+    <flux:sidebar.group :heading="__('Platform')" class="grid">
+        <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+            {{ __('Dashboard') }}
+        </flux:sidebar.item>
+    </flux:sidebar.group>
+</flux:sidebar.nav>
 ```
 
-Repeat the same pattern in the mobile responsive navigation block (look for `x-responsive-nav-link` for Dashboard).
+Add a sibling `flux:sidebar.item` for graduations:
+
+```blade
+<flux:sidebar.item icon="academic-cap" :href="route('graduations.index')" :current="request()->routeIs('graduations.*')" wire:navigate>
+    {{ __('Graduations') }}
+</flux:sidebar.item>
+```
+
+The `:current="request()->routeIs('graduations.*')"` highlights the link on any `graduations.index|create|show|edit` page. `wire:navigate` keeps navigation SPA-fast via Livewire's [navigate](https://livewire.laravel.com/docs/navigate) feature.
+
+> If you started from a Breeze-based starter instead, your equivalent file is `resources/views/layouts/navigation.blade.php` — add an `<x-nav-link>` (and its `<x-responsive-nav-link>` mobile twin) pointing at `route('graduations.index')`.
 
 ### 2. `graduations/index.blade.php`
 
