@@ -99,18 +99,26 @@ public function import(Request $request, Graduation $graduation): RedirectRespon
 Near the **+ Add student** button:
 
 ```blade
-@can('create', App\Models\Student::class)
-    <form method="POST"
-          action="{{ route('graduations.students.import', $graduation) }}"
-          enctype="multipart/form-data"
-          class="inline-flex items-center gap-2">
-        @csrf
-        <input type="file" name="csv" accept=".csv,text/csv"
-               class="text-sm" required>
-        <button class="bg-slate-600 text-white px-3 py-2 rounded text-sm">
-            Import CSV
-        </button>
-    </form>
+ @can('create', App\Models\Student::class)
+    <div class="flex flex-wrap items-center gap-2">
+        <form method="POST"
+                action="{{ route('graduations.students.import', $graduation) }}"
+                enctype="multipart/form-data"
+                class="inline-flex items-center gap-2">
+            @csrf
+            <input type="file" name="csv" accept=".csv,text/csv" required
+                    class="block text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-slate-700 hover:file:bg-slate-200 dark:text-neutral-300 dark:file:bg-neutral-800 dark:file:text-neutral-200" />
+            <button type="submit"
+                    class="inline-flex items-center rounded-md bg-slate-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-700">
+                Import CSV
+            </button>
+        </form>
+
+        <a href="{{ route('graduations.students.create', $graduation) }}"
+            class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700">
+            + Add student
+        </a>
+    </div>
 @endcan
 ```
 
