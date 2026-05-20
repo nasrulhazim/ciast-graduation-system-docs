@@ -108,7 +108,7 @@ Copy `students/edit.blade.php` and:
 - Change action to `route('graduations.students.store', $graduation)`
 - Remove `@method('PATCH')`
 - Remove the `payment_receipt` field (admins attach receipts later via the edit page)
-- Replace `old('name', $student->name)` with `old('name')` everywhere
+- Replace `old('name', $student->name)` with `old('name')` everywhere. Do the same with other inputs that using `$student`
 
 ### 5. Update `graduations/show.blade.php`
 
