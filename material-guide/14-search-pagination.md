@@ -55,9 +55,18 @@ The inner `$q->where(function ($inner) ...)` block groups the OR clauses so they
 
 ### 2. Update `graduations/show.blade.php`
 
-Replace the static `$graduation->students` loop with `$students` (the paginator):
+Three things to swap from the relation (`$graduation->students`) over to the paginator (`$students`):
+
+1. The **count** in the section header
+2. The **`@forelse` loop**
+3. A new **pagination links** block below the table
 
 ```blade
+{{-- header count: was {{ $graduation->students->count() }} --}}
+<h3 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">
+    Students ({{ $students->total() }})
+</h3>
+
 <div class="flex justify-between items-center mb-4 gap-4">
     <form method="GET" action="{{ route('graduations.show', $graduation) }}"
           class="flex gap-2 flex-1">
@@ -95,7 +104,7 @@ Replace the static `$graduation->students` loop with `$students` (the paginator)
 <div class="mt-4">{{ $students->links() }}</div>
 ```
 
-The empty state contextualises whether it's a zero-match (search returned nothing) or a truly empty roster.
+The empty state contextualises whether it's a zero-match (search returned nothing) or a truly empty roster. Use `$students->total()` (not `count()`) on a paginator — `count()` only returns the rows on the current page.
 
 ### 3. Add three tests
 
