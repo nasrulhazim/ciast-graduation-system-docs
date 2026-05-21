@@ -118,15 +118,19 @@ if ($action === 'verify') {
 
 ### 5. Update `students/show.blade.php`
 
-Replace the verify form block with this paired block:
+Replace the verify form block with this paired block. The Livewire starter kit uses Flux UI, not the Breeze `<x-primary-button>` component, so render the buttons as plain `<button>` tags styled with Tailwind utility classes — matching the rest of this codebase:
 
 ```blade
 @can('verify', $student)
     <form method="POST"
           action="{{ route('graduations.students.verify', [$graduation, $student]) }}"
           class="mt-4">
-        @csrf @method('PATCH')
-        <x-primary-button>Verify payment</x-primary-button>
+        @csrf
+        @method('PATCH')
+        <button type="submit"
+                class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700">
+            Verify payment
+        </button>
     </form>
 @endcan
 
@@ -135,13 +139,19 @@ Replace the verify form block with this paired block:
           action="{{ route('graduations.students.revoke', [$graduation, $student]) }}"
           onsubmit="return confirm('Revoke verification for {{ $student->name }}?')"
           class="mt-4">
-        @csrf @method('PATCH')
-        <button class="px-4 py-2 bg-red-600 text-white rounded">Revoke verification</button>
+        @csrf
+        @method('PATCH')
+        <button type="submit"
+                class="inline-flex items-center rounded-md bg-rose-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-rose-700">
+            Revoke verification
+        </button>
     </form>
 @endcan
 ```
 
 `@can` enforces mutual exclusion: a verified student fails `verify` and passes `revoke`; an unverified student does the opposite.
+
+> ⚠️ **Don't use `<x-primary-button>` here.** That component ships with the Breeze starter kit; this project uses the Livewire / Flux starter kit, which has no `<x-primary-button>` and will blow up with `Unable to locate a class or view for component [primary-button]`. Either use the inline button + Tailwind classes shown above, or switch to Flux primitives (`<flux:button variant="primary">…</flux:button>`).
 
 ### 6. Add six tests
 
@@ -245,6 +255,7 @@ git commit -m "feat(verify): hide button once verified + admin can revoke"
 - **Bulk verify double-fires email** — your bulk filter still uses only `whereNotNull('payment_receipt')`. Add `whereNull('verified_at')`.
 - **Revoke confirms but doesn't redirect** — the `revoke()` action returns void instead of `RedirectResponse`. Type the return value explicitly so it shows up next time.
 - **Audit row reads `verified` instead of `revoked`** — copy-pasted from `verify()`. Always rename when copy-pasting handlers.
+- **`Unable to locate class or view [primary-button]`** — you copied an older snippet that uses `<x-primary-button>` (a Breeze component). The Livewire starter kit doesn't ship it. Replace with a plain `<button>` + Tailwind classes (as shown in step 5) or with `<flux:button variant="primary">`.
 
 ## What's next
 
